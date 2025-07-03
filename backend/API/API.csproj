@@ -33,7 +33,6 @@
     <Folder Include="Mappings\" />
     <Folder Include="Profiles\" />
     <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 

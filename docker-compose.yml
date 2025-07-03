@@ -1,4 +1,3 @@
----
 services:
   api:
     image: ${DOCKER_REGISTRY-}api
@@ -8,9 +7,11 @@ services:
     ports:
       - 5000:8080
     environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=Agenda;User Id=sa;Password=DotNet@2025;TrustServerCertificate=True;
       - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - sqlserver
+    networks:
+      - dev_network
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -20,5 +21,13 @@ services:
       - 1433:1433
     volumes:
       - sqlserver_data:/var/opt/mssql
+    networks:
+      - dev_network
+
 volumes:
-  sqlserver_data: null
+  sqlserver_data:
+    external: true
+
+networks:
+  dev_network:
+    external: true

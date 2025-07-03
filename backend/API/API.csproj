@@ -32,7 +32,6 @@
     <Folder Include="Data\" />
     <Folder Include="Mappings\" />
     <Folder Include="Profiles\" />
-    <Folder Include="Services\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 

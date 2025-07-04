@@ -21,9 +21,10 @@ namespace API.Services
             return _mapper.Map<IEnumerable<ContatoReadDTO>>(contatos);
         }
 
-        public Task<ContatoReadDTO?> GetByIdAsync(Guid id)
+        public async Task<ContatoReadDTO?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var contato = await _repo.GetByIdAsync(id);
+            return contato is null ? null : _mapper.Map<ContatoReadDTO>(contato);
         }
 
         public async Task<ContatoReadDTO> CreateAsync(ContatoCreateDTO dto)

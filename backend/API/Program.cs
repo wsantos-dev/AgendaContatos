@@ -1,15 +1,18 @@
 using API.Data;
+using API.Profiles;
 using API.Repositories;
 using API.Services;
+using API.Validators;
+using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
-using API.Profiles;
-using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssemblyContaining<API.Validators.ContatoCreateDtoValidator>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -26,7 +29,6 @@ builder.Services.AddScoped<IContatoService, ContatoService>();
 
 builder.Services.AddAutoMapper(typeof(ContatoProfile).Assembly);
 
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
 

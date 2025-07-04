@@ -1,4 +1,5 @@
 ﻿using API.DTOs;
+using API.Exceptions;
 using API.Models;
 using API.Repositories;
 using AutoMapper;
@@ -29,8 +30,15 @@ namespace API.Services
 
         public async Task<ContatoReadDTO> CreateAsync(ContatoCreateDTO dto)
         {
-            if (await _repo.GetByEmailAsync(dto.Email) != null)
-                throw new Exception("Contato com este e-mail já existe.");
+            var contatoExistenteEmail = await _repo.GetByEmailAsync(dto.Email);
+            if (contatoExistenteEmail != null)
+                throw new DuplicateEmailException(dto.Email);
+
+            var contatoExistenteTelefone = await _repo.GetByPhoneAsync(dto.Telefone);
+            if (contatoExistenteTelefone != null)
+                throw new DuplicatePhoneNumberException(dto.Telefone);
+
+            
 
             var contato = _mapper.Map<Contato>(dto);
             contato.Id = Guid.NewGuid();

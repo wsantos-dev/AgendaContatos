@@ -25,6 +25,11 @@ namespace API.Repositories
             return await _context.Contatos.FirstOrDefaultAsync(c => c.Email == email);
         }
 
+        public async Task<Contato?> GetByPhoneAsync(string phone)
+        {
+            return await _context.Contatos.FirstOrDefaultAsync(c => c.Telefone == phone);
+        }
+
         public async Task AddAsync(Contato contato)
         {
             await _context.Contatos.AddAsync(contato);

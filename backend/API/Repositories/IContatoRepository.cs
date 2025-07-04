@@ -7,6 +7,7 @@ namespace API.Repositories
         Task<IEnumerable<Contato>> GetAllAsync();
         Task<Contato?> GetByIdAsync(Guid id);
         Task<Contato?> GetByEmailAsync(string email);
+        Task<Contato?> GetByPhoneAsync(string phone);
         Task AddAsync(Contato contato);
         Task UpdateAsync(Contato contato);
         Task DeleteAsync(Contato contato);

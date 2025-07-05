@@ -1,3 +1,5 @@
+using API.Application.Commands;
+using API.Application.Validators;
 using API.Auth;
 using API.Data;
 using API.Models;
@@ -47,7 +49,7 @@ builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblyContaining<API.Validators.ContatoCreateDtoValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -103,6 +105,9 @@ builder.Services.AddScoped<IContatoService, ContatoService>();
 builder.Services.AddAutoMapper(typeof(ContatoProfile).Assembly);
 
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateContatoCommand).Assembly));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateContatoCommandValidator>();
+
 
 var app = builder.Build();
 
@@ -114,10 +119,9 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
-app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

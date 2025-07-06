@@ -58,21 +58,23 @@
       @hide="hideDialog"
       :style="{ width: '400px' }"
     >
-      <form @submit.prevent="saveContato">
-        <div class="field mb-3">
-          <label for="nome">Nome</label>
-          <InputText id="nome" v-model="form.nome" />
+      <form @submit.prevent="saveContato" class="space-y-4">
+        <div>
+          <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+          <InputText id="nome" v-model="form.nome" class="w-full mb-1" />
         </div>
-        <div class="field mb-3">
-          <label for="email">Email</label>
-          <InputText id="email" v-model="form.email" type="email" />
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <InputText id="email" v-model="form.email" type="email" class="w-full mb-1" />
         </div>
-        <div class="field mb-3">
-          <label for="telefone">Telefone</label>
-          <InputText id="telefone" v-model="form.telefone" />
+        <div>
+          <label for="telefone" class="block text-sm font-medium text-gray-700 mb-1"
+            >Telefone</label
+          >
+          <InputText id="telefone" v-model="form.telefone" class="w-full mb-1" />
         </div>
 
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end gap-2 pt-2">
           <Button label="Cancelar" class="p-button-text" @click="hideDialog" />
           <Button label="Salvar" type="submit" />
         </div>
@@ -114,7 +116,43 @@ const filters = reactive({
   global: { value: null, matchMode: 'contains' },
 })
 
-// ✅ Função para extrair mensagens detalhadas da API
+function phoneMask(el) {
+  function format(value) {
+    if (!value) return ''
+
+    value = value.replace(/\D/g, '')
+
+    if (value.length <= 10) {
+      // Formato (00) 0000-0000
+      value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3')
+    } else {
+      // Formato (00) 00000-0000
+      value = value.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3')
+    }
+    return value.trim().replace(/[-\s]+$/, '')
+  }
+
+  function onInput(e) {
+    const el = e.target
+    const position = el.selectionStart
+    const oldValue = el.value
+
+    el.value = format(el.value)
+
+    if (position < el.value.length) {
+      el.selectionStart = el.selectionEnd = position
+    }
+
+    el.dispatchEvent(new Event('input'))
+  }
+
+  el.addEventListener('input', onInput)
+
+  onBeforeUnmount(() => {
+    el.removeEventListener('input', onInput)
+  })
+}
+
 function extractErrorMessage(error, fallback) {
   if (!error.response || !error.response.data) return fallback
 
@@ -164,11 +202,6 @@ function hideDialog() {
 
 async function saveContato() {
   try {
-    if (!form.nome || !form.email || !form.telefone) {
-      toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha todos os campos' })
-      return
-    }
-
     if (form.id) {
       await contatoService.update(form.id, {
         nome: form.nome,

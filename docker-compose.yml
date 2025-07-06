@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: backend/API/Dockerfile
+    command: >
+      sh -c "cd /app && dotnet ef database update && dotnet API.dll"
     ports:
       - 5000:8080
     environment:
@@ -20,12 +22,21 @@ services:
     ports:
       - 1433:1433
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - meu_banco:/var/opt/mssql
     networks:
       - dev_network
 
+  frontend:
+    build:
+        context: ./frontend/agenda-frontend
+        dockerfile: Dockerfile
+    ports:
+        - 3000:80 
+    networks:
+        - dev_network
+
 volumes:
-  sqlserver_data:
+  meu_banco:
     external: true
 
 networks:

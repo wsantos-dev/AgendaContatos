@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const isDocker = window.location.hostname !== 'localhost'
+
 const api = axios.create({
-  baseURL: 'http://localhost:5136/api', // ajuste conforme sua API
+  baseURL: isDocker ? 'http://api:8080/api' : 'http://localhost:5000/api',
 })
 
 api.interceptors.request.use((config) => {

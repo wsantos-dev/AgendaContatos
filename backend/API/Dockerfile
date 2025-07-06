@@ -1,18 +1,18 @@
-# Use a imagem oficial do SDK do .NET para construir a aplicação
+ï»¿# Use a imagem oficial do SDK do .NET para construir a aplicaÃ§Ã£o
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /app
 
-# Copiar os arquivos csproj e restaurar dependências
+# Copiar os arquivos csproj e restaurar dependÃªncias
 COPY backend/API/*.csproj ./API/
 RUN dotnet restore ./API/API.csproj
 
-# Copiar o restante do código e publicar
+# Copiar o restante do cÃ³digo e publicar
 COPY backend/. ./backend/
 WORKDIR /app/backend/API
 RUN dotnet publish -c Release -o out
 
-# Imagem final para rodar a aplicação
+# Imagem final para rodar a aplicaÃ§Ã£o
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/backend/API/out ./

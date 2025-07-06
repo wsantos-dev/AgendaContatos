@@ -1,11 +1,11 @@
 <template>
-  <div class="p-4 container w-screen min-h-screen overflow-x-hidden">
+  <div class="p-4 container w-screen overflow-x-hidden">
     <Toast />
     <ConfirmDialog />
 
-    <div class="flex justify-between mb-4">
+    <div class="flex justify-content-start mb-4">
       <h2>Lista de Contatos</h2>
-      <Button label="Novo Contato" icon="pi pi-plus" @click="showDialog()" />
+      <Button label="Novo Contato" icon="pi pi-plus" class="ml-3" @click="showDialog()" />
     </div>
 
     <DataTable
@@ -21,14 +21,14 @@
       @filter="onFilter"
       class="w-full mb-4"
     >
-      <template #header>
+      <!-- <template #header>
         <div class="flex justify-end">
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText v-model="globalFilter" placeholder="Pesquisar..." />
           </span>
         </div>
-      </template>
+      </template> -->
 
       <Column field="nome" header="Nome" sortable />
       <Column field="email" header="Email" sortable />

@@ -1,7 +1,7 @@
 
 # 📘 Agenda de Contatos
 
-Aplicação para gerenciamento de contatos, com backend em .NET e frontend em Vue.js 3
+Aplicação para gerenciamento de contatos.
 
 ---
 

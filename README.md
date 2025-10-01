@@ -79,14 +79,8 @@ Instale o Docker Desktop conforme sua plataforma (Caso não tenha instalado em s
 docker network create dev_network
 ```
 
-### 2. Criar um volume Docker;
-##### é necessário criar com este nome (meu_banco)
 
-```bash
-docker volume create meu_banco
-```
-
-### 3. Criar um container SQL Server 2022
+### 2. Criar um container SQL Server 2022
 
 > ⚠️ Para Linux/MacOS substitua os acentos graves (\`) por barras invertidas (`\`)
 
@@ -166,20 +160,5 @@ Bearer <seu-token>
 ```
 
 Substitua `<seu-token>` pelo token JWT que você recebeu.
-
----
-
-## 🖥️ Acessando o Frontend (Vue.js)
-
-Abra no navegador:
-
-```
-http://localhost:3000/login
-```
-
-### 🧾 Credenciais de Acesso
-
-- **Email:** `admin.dev@agendaapp.com`  
-- **Senha:** `De$af10Ag3nd@DotNet#$2025!#`
 
 ---

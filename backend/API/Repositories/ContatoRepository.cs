@@ -14,20 +14,28 @@ namespace API.Repositories
         }
         public async Task<IEnumerable<Contato>> GetAllAsync()
         {
-            return await _context.Contatos.ToListAsync();
+            return await _context.Contatos
+                .AsNoTracking()
+                .ToListAsync();
         }
         public async Task<Contato?> GetByIdAsync(Guid id)
         {
-            return await _context.Contatos.FindAsync(id);
+            return await _context.Contatos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<Contato?> GetByEmailAsync(string email)
         {
-            return await _context.Contatos.FirstOrDefaultAsync(c => c.Email == email);
+            return await _context.Contatos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task<Contato?> GetByPhoneAsync(string phone)
         {
-            return await _context.Contatos.FirstOrDefaultAsync(c => c.Telefone == phone);
+            return await _context.Contatos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Telefone == phone);
         }
 
         public async Task AddAsync(Contato contato)

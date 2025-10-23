@@ -1,4 +1,4 @@
-using API.Application.Commands;
+﻿using API.Application.Commands;
 using API.Application.Validators;
 using API.Auth;
 using API.Data;
@@ -9,6 +9,7 @@ using API.Services;
 using API.Validators;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -55,7 +56,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Agenda API", Version = "v1" });
 
-    // Suporte � autentica��o JWT
+    // Suporte à autenticação JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -111,16 +112,68 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateContatoCommandValidat
 
 var app = builder.Build();
 
+
+app.UseExceptionHandler(exceptionApi =>
+{
+    exceptionApi.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        var feature = context.Features.Get<IExceptionHandlerFeature>();
+        if (feature is not null)
+        {
+            var error = feature.Error;
+
+            // Logger
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(error, "Erro não tratado: {message}.", error.Message);
+
+            var response = new
+            {
+                status = 500,
+                message = "Ocorreu um erro interno no servidor",
+                detail = app.Environment.IsDevelopment() ? error.Message : null 
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    });
+
+});
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        db.Database.Migrate();
+        logger.LogInformation("✅ Migrations aplicadas com sucesso!");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError($"❌ Erro ao aplicar migrations: {ex.Message}");
+
+        if (app.Environment.IsProduction())
+        {
+            throw;
+        }
+       
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
